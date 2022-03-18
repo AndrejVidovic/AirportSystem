@@ -1,0 +1,122 @@
+﻿@page "/FlightList"
+@using FlightManagementBlazorServer.Services
+@inject FlightService _flightService;
+@inject NavigationManager _navigationManager;
+@inject AppState AppState
+
+@if (AppState.LoggedIn == null)
+{
+    <p>You Need To Login To See This page!</p>
+}
+else
+{
+    <h3>Flights</h3>
+    @if (AppState.LoggedIn == "Admin")
+    {
+        <button type="button" class="btn btn-success" @onclick="OpenAddFlightPage">
+            <span class="oi oi-plus"></span>
+            Add Flight
+        </button>
+    }
+
+    @if(Flights == null)
+    {
+        <div>Loading...</div>
+    }
+    else
+    {
+            @if (Flights.Count != 0)
+            {
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Carrier</th>
+                            <th>Airport to</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var flight in Flights)
+                        {
+                            <tr>
+                                <td>@flight.Number</td>
+                                <td>@flight.FlightDate.ToString("dd.MM.yyyy")</td>
+                                <td>@flight.FlightTime</td>
+                                <td>@flight.Carrier?.Name</td>
+                                <td>@flight.AirportTo</td>
+                                @if (AppState.LoggedIn == "Admin")
+                                {
+                                    <td>
+                                        <a href="/EditFlight/@flight.Id" class="btn btn-primary">
+                                            <span class="oi oi-pencil"></span>    
+                                        </a>
+                                        <button type="button" class="btn btn-danger" @onclick="() => DeleteFlight(flight.Id)">
+                                            <span class="oi oi-delete"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" @onclick="() => ArchiveFlight(flight.Id)">
+                                            <span class="oi oi-transfer"></span>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No flights added!</p>
+            }
+        }
+}
+<ConfirmationDialog @ref="DeleteConfirmationDialog" ConfirmationChanged="@OnDeleteConfirmationSelected" Question="Delete flight?"></ConfirmationDialog>
+<ConfirmationDialog @ref="ArchiveConfirmationDialog" ConfirmationChanged="@OnArchiveConfirmationSelected" Question="Archive flight?"></ConfirmationDialog>
+
+@code {
+    private List<Flight> Flights;
+    public ConfirmationDialog DeleteConfirmationDialog{ get; set; }
+    public ConfirmationDialog ArchiveConfirmationDialog{ get; set; }
+    public int SelectedFlightId{ get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Flights = await _flightService.GetFlights();
+
+    }
+    private void OpenAddFlightPage()
+    {
+        _navigationManager.NavigateTo("/AddFlight");
+    }
+
+    private async Task DeleteFlight(int flightId)
+    {
+        SelectedFlightId = flightId;
+        DeleteConfirmationDialog.Show();
+    }
+
+    private async Task OnDeleteConfirmationSelected(bool isDeleteConfirmed)
+    {
+        if(isDeleteConfirmed)
+        {
+            await _flightService.DeleteFlight(SelectedFlightId);
+            Flights = await _flightService.GetFlights();
+        }
+    }
+
+    private async Task OnArchiveConfirmationSelected(bool isArchiveConfirmed)
+    {
+        if(isArchiveConfirmed)
+        {
+            await _flightService.ArchiveFlight(SelectedFlightId);
+            Flights = await _flightService.GetFlights();
+        }
+    }
+
+    private async Task ArchiveFlight(int flightId)
+    {
+        SelectedFlightId = flightId;
+        ArchiveConfirmationDialog.Show();
+    }
+}

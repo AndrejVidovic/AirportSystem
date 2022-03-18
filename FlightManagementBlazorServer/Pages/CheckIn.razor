@@ -1,0 +1,74 @@
+﻿@page "/CheckIn/{FlightId}"
+@inherits CheckInBase;
+
+<h3>Check In page for flight @SelectedFlight</h3>
+@if(Passengers == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    @if (Passengers.Count != 0)
+    {
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var passenger in Passengers)
+            {
+                <tr>
+                    <td>@passenger.Name</td>
+                    <td>@passenger.Surname</td>
+                    <td>
+                       <button type="button" class="btn btn-success" @onclick="() => SelectSeat(passenger)">
+                            <span class="oi oi-check"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No passengers to check in on flight @SelectedFlight</p>
+    }
+    <button type="button" class="btn btn-secondary" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+        Close
+    </button>
+}
+
+@if(ShowDialog)
+{
+    <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">CheckIn form</h5>
+              <button type="button" @onclick="() => IsSeatSelected(false)" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@SelectedPassenger">
+                <label for="InsertSeat">Select seat</label>
+                <InputText id="InsertSeat" @bind-Value="@Seat" class="form-control"></InputText>
+                </EditForm>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" @onclick="() => IsSeatSelected(true)" class="btn btn-primary">Yes</button>
+              <button type="button" @onclick="() => IsSeatSelected(false)" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+</div>
+
+}
+<NotificationDialog @ref="NotificationDialog" Description="@ConcatenatedValidationErrors"></NotificationDialog>
+

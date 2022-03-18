@@ -1,0 +1,16 @@
+﻿@page "/"
+@inherits LoginBase;
+
+
+<h3>Login</h3>
+<EditForm Model="@User" OnValidSubmit="@LoginAsync">
+    <label for="username">Username</label>
+   <InputText id="username"  class="form-control" @bind-Value="@User.Username"></InputText>
+   <label for="password">Password</label>
+   <InputText id="pasword"  class="form-control" @bind-Value="@User.Password"></InputText>  
+   <button type="submit" class="btn btn-success">
+        <span class="oi oi-pencil"></span>
+        Login
+    </button>
+</EditForm>
+<NotificationDialog @ref="NotificationDialog" Description="@ConcatenatedValidationErrors"></NotificationDialog>

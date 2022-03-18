@@ -1,0 +1,58 @@
+﻿@page "/PassengersPage"
+@inherits PassengersPageBase
+@inject AppState AppState
+
+@if (AppState.LoggedIn == null)
+{
+    <p>You Need To Login To See This page!</p>
+}
+else
+{
+    <h3>Passenger page</h3>
+
+    @if(Flights == null)
+    {
+        <div>Loading...</div>
+    }
+    else
+    {
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Airport to</th>
+                    @if (AppState.LoggedIn == "Admin")
+                    {
+                        <th>Add Passenger</th> 
+                    }
+                    <th>List of passengers</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var flight in Flights)
+                {
+                    <tr>
+                        <td>@flight.Number</td>
+                        <td>@flight.AirportTo</td>
+                         @if (AppState.LoggedIn == "Admin")
+                        {
+                        <td>
+                            <a href="/AddPassenger/@flight.Id" class="btn btn-success">
+                                <span class="oi oi-person"></span>    
+                            </a>
+                        </td>
+                        }
+                        <td>
+                             <a href="/PassengersList/@flight.Id" class="btn btn-info">
+                                <span class="oi oi-list"></span>    
+                            </a>
+                        </td>
+
+                    </tr>
+                }
+            
+            </tbody>
+        </table>
+
+    }
+}

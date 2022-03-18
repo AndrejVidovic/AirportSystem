@@ -1,0 +1,25 @@
+﻿<div class="passengerFields">
+    <label for="passengerName">Name</label>
+    <InputText id="passengerName" @bind-Value="@Passenger.Name" class="form-control"></InputText>
+
+    <label for="passengerSurname">Surname</label>
+    <InputText id="passengerSurname" @bind-Value="@Passenger.Surname" class="form-control"></InputText>
+
+    <label for="gender">Gender</label>
+    <InputSelect id="gender" @bind-Value="@Passenger.Gender" class="form-control">
+        <option value="">Select...</option>
+        @foreach(var gender in genders)
+        {
+            <option value="@gender">@gender</option>
+        }
+    </InputSelect>
+</div>    
+
+
+@code {
+
+    [Parameter]
+    public Passenger Passenger { get; set; }
+    public string[] genders = { "Male", "Female" };
+
+}

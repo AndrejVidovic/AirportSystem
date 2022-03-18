@@ -1,0 +1,54 @@
+﻿@page "/PassengersList/{FlightId}"
+@inherits PassengersListBase
+<h3>Passengers on flight @SelectedFlight</h3>
+
+@if(Passengers == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    @if (Passengers.Count != 0)
+    {
+         <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Gender</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var passenger in Passengers)
+            {
+                <tr>
+                    <td>@passenger.Name</td>
+                    <td>@passenger.Surname</td>
+                    <td>@passenger.Gender</td>
+                    <td>
+                        <a href="/EditPassenger/@passenger.Id" class="btn btn-primary">
+                            <span class="oi oi-pencil"></span>    
+                        </a>
+                        <button type="button" class="btn btn-danger" @onclick="()=>DeletePassenger(passenger.Id)">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                   
+                </tr>
+            }
+        </tbody>
+        </table>
+    }
+    else
+    {
+       <p>There is no passengers on flight @SelectedFlight!</p>
+    }
+
+   
+   
+   <button type="button" class="btn btn-secondary" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+        Close
+    </button>
+}
+<ConfirmationDialog @ref="DeleteConfirmationDialog" ConfirmationChanged="@OnDeleteConfirmationSelected" Question="Delete passenger?"></ConfirmationDialog>

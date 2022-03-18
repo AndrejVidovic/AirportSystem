@@ -1,0 +1,24 @@
+﻿@page "/AddPassenger/{FlightId}"
+@inherits AddPassengerBase
+
+<h3>Add Passenger to Flight</h3>
+@if (Flight == null)
+{
+    <p>loading...</p>
+}
+else
+{
+    <EditForm Model="@Passenger" OnValidSubmit="@AddPassengerAsync">
+        <PassengerFields Passenger="@Passenger"></PassengerFields>
+        <button type="submit" class="btn btn-success">
+            <span class="oi oi-pencil"></span>
+            Add Passenger
+        </button>
+        <button type="button" class="btn btn-secondary" @onclick="Close">
+            <span class="oi oi-media-skip-backward"></span>
+            Close
+        </button>
+
+    </EditForm>
+}
+<NotificationDialog @ref="NotificationDialog" Description="@ConcatenatedValidationErrors"></NotificationDialog>

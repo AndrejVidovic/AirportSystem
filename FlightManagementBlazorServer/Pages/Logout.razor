@@ -1,0 +1,12 @@
+﻿@page "/Logout"
+@inject AppState AppState
+
+<h1>You have successfully logged out of the application.</h1>
+
+@code {
+     protected override async Task OnInitializedAsync()
+    {
+        AppState.LoggedIn = null;
+       
+    }
+}

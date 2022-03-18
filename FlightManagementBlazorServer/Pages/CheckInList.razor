@@ -1,0 +1,42 @@
+﻿@page "/CheckInList/{FlightId}"
+@inherits CheckInListBase;
+
+<h3>Check In passengers on flight @SelectedFlight</h3>
+
+@if(Passengers == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    @if (Passengers.Count != 0)
+    {
+         <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Seat</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var passenger in Passengers)
+                {
+                    <tr>
+                        <td>@passenger.Name</td>
+                        <td>@passenger.Surname</td>
+                        <td>@passenger.Seat</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+       <p>There is no passengers on flight @SelectedFlight!</p>
+    }
+   <button type="button" class="btn btn-secondary" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+        Close
+   </button>
+}

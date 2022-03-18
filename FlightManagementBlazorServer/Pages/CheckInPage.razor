@@ -1,0 +1,50 @@
+﻿@page "/CheckInPage"
+@inherits CheckInPageBase
+@inject AppState AppState;
+@if (AppState.LoggedIn == null)
+{
+    <p>You Need To Login To See This page!</p>
+}
+else
+    {
+    <h3>Check In page</h3>
+
+    @if(Flights == null)
+    {
+        <div>Loading...</div>
+    }
+    else
+    {
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Airport to</th>
+                    <th>Check In</th>
+                    <th>Checked list</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var flight in Flights)
+                {
+                    <tr>
+                        <td>@flight.Number</td>
+                        <td>@flight.AirportTo</td>
+                        <td>
+                             <a href="/CheckIn/@flight.Id" class="btn btn-success">
+                                <span class="oi oi-check"></span>    
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/CheckInList/@flight.Id" class="btn btn-info">
+                                <span class="oi oi-list"></span>    
+                            </a>
+                        </td>
+                    </tr>
+                }
+            
+            </tbody>
+        </table>
+
+    }
+}
